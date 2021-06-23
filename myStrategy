@@ -3,32 +3,23 @@
 
 //@version=4
 
-// Inputs {
-i_ema1 = input(title="Fast EMA", type=input.integer, defval=4, minval=1, maxval=25)
-i_ema2 = input(title="Slower EMA", type=input.integer, defval=8, minval=4, maxval=100)
-i_ema3 = input(title="Slowest EMA", type=input.integer, defval=25, minval=8, maxval=200)
-//}
+// Strategy {
+strategy("My Strategy", overlay=true)
 
 // Variables {
-ema1 = ema(ohlc4, i_ema1)
-ema2 = ema(ohlc4, i_ema2)
-ema3 = ema(ohlc4, i_ema3)
+ema1 = ema(close, 4)
+ema2 = ema(close, 8)
+ema3 = ema(close, 25)
 //}
 
-// Strategy {
-strategy("My Strategy", overlay=true, margin_long=1000, margin_short=1000)
+long = (ema1 > ema2) and (ema2 > ema3)
+short = (ema1 < ema2) and (ema2 < ema3)
 
-longCondition = (crossover(ema1, ema2) and crossover(ema2, ema3))
-if (longCondition)
-    strategy.entry("Bull", strategy.long)
+strategy.entry("Long", strategy.long, 1000.0, when = long)
+strategy.entry("Short", strategy.short, 1000.0, when =short)
 
-plot(strategy.position_avg_price)
-
-shortCondition = (crossunder(ema1, ema2) and crossunder(ema2, ema3))
-if (shortCondition)
-    strategy.entry("Bear", strategy.short)
-
-// }
+strategy.close("Long", when = short)
+strategy.close("Short", when = long)
 
 // Design {
 p_1 = plot(ema1)

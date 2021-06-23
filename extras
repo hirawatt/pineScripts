@@ -1,0 +1,38 @@
+// Testing {
+var table perfTable = table.new(position.top_right, 3, 2, border_width = 3)
+
+LIGHTTRANSP = 90
+AVGTRANSP   = 80
+HEAVYTRANSP = 70
+
+i_posColor = input(color.rgb(38, 166, 154), title="Positive Color")
+i_negColor = input(color.rgb(240, 83, 80), title="Negative Color")
+
+f_rateOfreturn(_v1, _v2) => (_v1 - _v2) * 100 / abs(_v2)
+
+f_performance(_barsBack) =>
+    _performance = security(syminfo.tickerid, "1D", f_rateOfreturn(close, close[_barsBack]))
+    _performance
+
+lastYearClose = security(syminfo.tickerid, "12M", close[1], lookahead=barmerge.lookahead_on)
+
+f_fillCell(_table, _column, _row, _value, _timeframe) =>
+    _c_color = _value >= 0 ? i_posColor : i_negColor
+    _transp = abs(_value) > 10 ? HEAVYTRANSP : abs(_value) > 5 ? AVGTRANSP : LIGHTTRANSP
+    _cellText = tostring(_value, "#.##") + "%\n" + _timeframe
+    table.cell(_table, _column, _row, _cellText, bgcolor = color.new(_c_color, _transp), text_color = _c_color, width = 6)
+
+if barstate.islast
+    f_fillCell(perfTable, 0, 0, f_performance(5), "1W")
+    f_fillCell(perfTable, 1, 0, f_performance(21), "1M")
+    f_fillCell(perfTable, 2, 0, f_performance(63), "3M")
+    f_fillCell(perfTable, 0, 1, f_performance(126), "6M")
+    f_fillCell(perfTable, 1, 1, f_rateOfreturn(close, lastYearClose), "YTD")
+    f_fillCell(perfTable, 2, 1, f_performance(251), "1Y")
+//}
+
+// Inputs {
+i_ema1 = input(title="Fast EMA", type=input.integer, defval=4, minval=1, maxval=25)
+i_ema2 = input(title="Slower EMA", type=input.integer, defval=8, minval=4, maxval=100)
+i_ema3 = input(title="Slowest EMA", type=input.integer, defval=25, minval=8, maxval=200)
+//}
