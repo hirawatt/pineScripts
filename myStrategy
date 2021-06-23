@@ -1,0 +1,39 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+
+// Inputs {
+i_ema1 = input(title="Fast EMA", type=input.integer, defval=4, minval=1, maxval=25)
+i_ema2 = input(title="Slower EMA", type=input.integer, defval=8, minval=4, maxval=100)
+i_ema3 = input(title="Slowest EMA", type=input.integer, defval=25, minval=8, maxval=200)
+//}
+
+// Variables {
+ema1 = ema(ohlc4, i_ema1)
+ema2 = ema(ohlc4, i_ema2)
+ema3 = ema(ohlc4, i_ema3)
+//}
+
+// Strategy {
+strategy("My Strategy", overlay=true, margin_long=1000, margin_short=1000)
+
+longCondition = (crossover(ema1, ema2) and crossover(ema2, ema3))
+if (longCondition)
+    strategy.entry("Bull", strategy.long)
+
+plot(strategy.position_avg_price)
+
+shortCondition = (crossunder(ema1, ema2) and crossunder(ema2, ema3))
+if (shortCondition)
+    strategy.entry("Bear", strategy.short)
+
+// }
+
+// Design {
+p_1 = plot(ema1)
+p_2 = plot(ema2)
+p_3 = plot(ema3)
+fill(p_1, p_2, color= color.green)
+daily = timeframe.isdaily
+//}
