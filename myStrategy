@@ -7,19 +7,28 @@
 strategy("My Strategy", overlay=true)
 
 // Variables {
-ema1 = ema(close, 4)
-ema2 = ema(close, 8)
-ema3 = ema(close, 25)
+ema1 = ema(hlc3, 1)
+ema2 = ema(hlc3, 5)
+ema3 = ema(hlc3, 10)
+ema4 = ema(hlc3, 21)
+ema5 = ema(hlc3, 55)
 //}
 
-long = (ema1 > ema2) and (ema2 > ema3)
-short = (ema1 < ema2) and (ema2 < ema3)
+long = (ema1 > ema2) and (ema2 > ema3) and (ema3 > ema4) and (ema4 > ema5) and crossover(rsi(close, 14), 60)
+short = (ema1 < ema2) and (ema2 < ema3) and (ema3 < ema4) and (ema4 < ema5) or crossunder(rsi(close, 14), 40)
 
-strategy.entry("Long", strategy.long, 1000.0, when = long)
-strategy.entry("Short", strategy.short, 1000.0, when =short)
+e_long = (ema1 > ema2)
+e_short = (ema1 < ema2)
 
-strategy.close("Long", when = short)
-strategy.close("Short", when = long)
+start = timestamp(2020, 1, 1, 0, 0)
+end = timestamp(2022, 1, 1, 0, 0)
+
+if time >= start and time <= end
+    strategy.entry("Long", strategy.long, 1000.0, when = long)
+    strategy.entry("Short", strategy.short, 1000.0, when =short)
+
+strategy.close("Long", when = e_short)
+strategy.close("Short", when = e_long)
 
 // Design {
 p_1 = plot(ema1)
