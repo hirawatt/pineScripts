@@ -14,26 +14,31 @@ ema4 = ema(hlc3, 21)
 ema5 = ema(hlc3, 55)
 //}
 
-long = (ema1 > ema2) and (ema2 > ema3) and (ema3 > ema4) and (ema4 > ema5) and crossover(rsi(close, 14), 60)
-short = (ema1 < ema2) and (ema2 < ema3) and (ema3 < ema4) and (ema4 < ema5) or crossunder(rsi(close, 14), 40)
+long = (ema1 > ema2) and (ema2 > ema3) and (ema3 > ema4) and (ema4 > ema5) or crossover(rsi(close, 14), 60.5)
+short = (ema1 < ema2) and (ema2 < ema3) and (ema3 < ema4) and (ema4 < ema5) or crossunder(rsi(close, 14), 40.5)
 
-e_long = (ema1 > ema2)
-e_short = (ema1 < ema2)
+e_long = (ema1 > ema2) or crossover(rsi(close, 14), 60.5)
+e_short = (ema1 < ema2) or crossunder(rsi(close, 14), 40.5)
 
-start = timestamp(2020, 1, 1, 0, 0)
+start = timestamp(2021, 1, 1, 0, 0)
 end = timestamp(2022, 1, 1, 0, 0)
 
 if time >= start and time <= end
-    strategy.entry("Long", strategy.long, 1000.0, when = long)
-    strategy.entry("Short", strategy.short, 1000.0, when =short)
+    strategy.entry("Long", strategy.long, 25.0, when = long)
+    strategy.entry("Short", strategy.short, 25.0, when =short)
 
+strategy.exit("exit", "", profit = 250, loss = 50)
 strategy.close("Long", when = e_short)
 strategy.close("Short", when = e_long)
 
+
 // Design {
-p_1 = plot(ema1)
-p_2 = plot(ema2)
+
+p_1 = plot(ema1, title="1", color=color.blue)
+p_2 = plot(ema2, title="2", color=color.green)
 p_3 = plot(ema3)
+p_4 = plot(ema4)
+p_5 = plot(ema5)
 fill(p_1, p_2, color= color.green)
 daily = timeframe.isdaily
 //}
