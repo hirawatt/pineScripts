@@ -1,0 +1,49 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+study(title="5 EMAs", shorttitle="5MA", overlay=true)
+
+// Variables {
+src = input(title="Source", type=input.source, defval=hlc3)
+
+timeFrame  = input(title="Time Frame", type=input.resolution, defval="180")
+timeFrame1 = input(title="Time Frame 1", type=input.resolution, defval="5")
+timeFrame2 = input(title="Time Frame 2", type=input.resolution, defval="15")
+timeFrame3 = input(title="Time Frame 3", type=input.resolution, defval="30")
+timeFrame4 = input(title="Time Frame 4", type=input.resolution, defval="120")
+timeFrame5 = input(title="Time Frame 5", type=input.resolution, defval="D")
+
+ema1Len = input(title="MA 1 Length", type=input.integer, defval=1)
+ema2Len = input(title="MA 2 Length", type=input.integer, defval=5)
+ema3Len = input(title="MA 3 Length", type=input.integer, defval=10)
+ema4Len = input(title="MA 4 Length", type=input.integer, defval=21)
+ema5Len = input(title="MA 5 Length", type=input.integer, defval=55)
+
+ema1 = ema(security(syminfo.tickerid, timeFrame1, src), ema1Len)
+ema2 = ema(security(syminfo.tickerid, timeFrame2, src), ema2Len)
+ema3 = ema(security(syminfo.tickerid, timeFrame3, src), ema3Len)
+ema4 = ema(security(syminfo.tickerid, timeFrame4, src), ema4Len)
+ema5 = ema(security(syminfo.tickerid, timeFrame5, src), ema5Len)
+//}
+
+// Design {
+p_1 = plot(ema1, title="MA1", color=color.blue)
+p_2 = plot(ema2, title="MA2", color=color.green)
+p_3 = plot(ema3, title="MA3", color=color.yellow)
+p_4 = plot(ema4, title="MA4", color=color.orange)
+p_5 = plot(ema5, title="MA5", color=color.red)
+
+symbolHigh = security(syminfo.tickerid, timeFrame, high)
+symbolLow  = security(syminfo.tickerid, timeFrame, low)
+
+plot(symbolHigh, color=color.green)
+plot(symbolLow, color=color.red)
+
+bars = tostring(bar_index)
+
+var table t = table.new(position.top_right, 1, 2, bgcolor = color.rgb(255, 0, 0, 50))
+table.cell_set_text(t, row = 0, column = 0, text = "Bars")
+table.cell(t, 0, 1, text = bars, bgcolor = color.rgb(255, 255, 0, 50))
+
+//}

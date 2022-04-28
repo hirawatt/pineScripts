@@ -1,0 +1,44 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+// Strategy {
+
+strategy(title="Dual Moving Average", overlay=true,
+     pyramiding=0, initial_capital=100000,
+     commission_type=strategy.commission.cash_per_order,
+     commission_value=60, slippage=5,
+     format=format.price,
+     max_bars_back=375,
+     default_qty_type=strategy.fixed,
+     calc_on_every_tick=true)
+strategy.risk.max_cons_loss_days(15)
+
+// Variables {
+
+// Using close is faster than using hlc3
+src = input(title="Source", type=input.source, defval=hlc3)
+
+start = input(title="Date", type=input.time, defval=timestamp("20 Feb 2001 00:00 +0300"))
+end = input(title="Date", type=input.time, defval=timestamp("20 Feb 2022 00:00 +0300"))
+
+sym = input(title="Symbol", type=input.symbol, defval="BANKNIFTY")
+res = input(title="Resolution", type=input.resolution, defval="1D")
+
+//}
+
+
+// Design {
+
+var table t = table.new(position.top_right, 2, 3)
+
+table.cell(t, 0, 0, "RSI", rsi(src, 14), bgcolor = color.lime)
+table.cell(t, 0, 1, "RSI", rsi(src, 14), bgcolor = color.lime)
+table.cell(t, 0, 2, "RSI", rsi(src, 14), bgcolor = color.lime)
+
+table.cell(t, 1, 0, "RSI", rsi(src, 14), bgcolor = color.lime)
+table.cell(t, 1, 1, "RSI", rsi(src, 14), bgcolor = color.lime)
+table.cell(t, 1, 2, "RSI", rsi(src, 14), bgcolor = color.lime)
+
+//}
+//}

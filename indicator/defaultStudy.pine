@@ -1,0 +1,23 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+study(title="5 EMAs", shorttitle="5MA", overlay=true)
+
+// Variables {
+src = input(title="Source", type=input.source, defval=hlc3)
+
+timeFrame  = input(title="Time Frame", type=input.resolution, defval="W")
+timeFrame1 = input(title="Time Frame 1", type=input.resolution, defval="5")
+timeFrame2 = input(title="Time Frame 2", type=input.resolution, defval="15")
+timeFrame3 = input(title="Time Frame 3", type=input.resolution, defval="30")
+timeFrame4 = input(title="Time Frame 4", type=input.resolution, defval="120")
+timeFrame5 = input(title="Time Frame 5", type=input.resolution, defval="D")
+
+//}
+
+symbolHigh = security(syminfo.tickerid, timeFrame, high)
+symbolLow  = security(syminfo.tickerid, timeFrame, low)
+
+plot(symbolHigh, color=color.green)
+plot(symbolLow, color=color.red)

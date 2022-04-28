@@ -1,0 +1,27 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+study(title="Foreign Markets Timing", shorttitle="FM Time", overlay=true)
+
+euSession = input(title="EU session", type=input.session, defval="1230-1530")
+ukSession = input(title="EU+UK session", type=input.session, defval="1530-2200")
+shanghaiSession = input(title="Shanghai session", type=input.session, defval="0700-1230")
+hongkongSession = input(title="Hong Kong session", type=input.session, defval="0645-1330")
+jpySession = input(title="Japan/Nikkei session", type=input.session, defval="0530-1130")
+
+// The BarInSession function returns true when
+// the current bar is inside the session parameter
+BarInSession(sess) => time(timeframe.period, sess) != 0
+
+// Set the colour variables for the ranges
+euColor = color.blue
+ukColor = color.lime
+shanghaiColor = color.red
+jpyColor = color.white
+
+// Determine the chart's background colour
+chartColour = BarInSession(euSession) ? euColour : BarInSession(ukSession) ? ukColour : BarInSession(shanghaiSession) ? shanghaiColor : BarInSession(jpySession) ? jpyColor : na
+
+// Set the background colour
+bgcolor(color=chartColour, transp=80)

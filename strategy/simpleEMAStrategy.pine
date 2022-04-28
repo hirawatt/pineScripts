@@ -1,0 +1,60 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=4
+strategy("Simple Long Term Strategy", overlay=true, margin_long=100, margin_short=100)
+// Dependency 5MA Study on the chart
+// Variables {
+src = input(title="Source", type=input.source, defval=hlc3)
+
+ema1Len = input(title="MA 1 Length", type=input.integer, defval=1)
+ema2Len = input(title="MA 2 Length", type=input.integer, defval=5)
+ema3Len = input(title="MA 3 Length", type=input.integer, defval=10)
+ema4Len = input(title="MA 4 Length", type=input.integer, defval=21)
+ema5Len = input(title="MA 5 Length", type=input.integer, defval=55)
+
+ema1 = ema(src, ema1Len)
+ema2 = ema(src, ema2Len)
+ema3 = ema(src, ema3Len)
+ema4 = ema(src, ema4Len)
+ema5 = ema(src, ema5Len)
+
+start = input(title="Start Date", type=input.time, defval=timestamp("20 Feb 2001 00:00 +0300"))
+end = input(title="End Date", type=input.time, defval=timestamp("20 Feb 2022 00:00 +0300"))
+
+
+crossema1 = input(title="Crossover MA1", defval=ema1, options=[ema1, ema2, ema3, ema3, ema4, ema5])
+crossema2 = input(title="Crossover MA2", defval=ema2, options=[ema1, ema2, ema3, ema3, ema4, ema5])
+crossema3 = input(title="Crossover MA3", defval=ema3, options=[ema1, ema2, ema3, ema3, ema4, ema5])
+crossema4 = input(title="Crossover MA4", defval=ema4, options=[ema1, ema2, ema3, ema3, ema4, ema5])
+crossema5 = input(title="Crossover MA5", defval=ema5, options=[ema1, ema2, ema3, ema3, ema4, ema5])
+
+//}
+
+long = crossover(crossema1, crossema5)
+short = crossunder(crossema1, crossema5)
+
+longCondition = long
+shortCondition = short
+
+closeLong = crossunder(crossema1, crossema3)
+closeShort = crossover(crossema1, crossema3)
+
+if time >= start and time <= end
+    strategy.entry("Long", strategy.long, when = longCondition)
+    strategy.entry("Short", strategy.short, when =shortCondition)
+
+strategy.exit("exit", "", profit = 500, loss = 50)
+strategy.close("Long", when = closeShort)
+strategy.close("Short", when = closeLong)
+
+
+// Design {
+p_1 = plot(ema1, title="1", color=color.blue)
+p_2 = plot(ema2, title="2", color=color.green)
+p_3 = plot(ema3, title="3", color=color.yellow)
+p_4 = plot(ema4, title="4", color=color.orange)
+p_5 = plot(ema5, title="5", color=color.red)
+fill(p_1, p_2, color= color.green)
+daily = timeframe.isdaily
+//}

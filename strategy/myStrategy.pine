@@ -13,23 +13,28 @@ ema3 = ema(hlc3, 10)
 ema4 = ema(hlc3, 21)
 ema5 = ema(hlc3, 55)
 //}
+src = input(title="Source", type=input.source, defval=close)
 
 long = (ema1 > ema2) and (ema2 > ema3) and (ema3 > ema4) and (ema4 > ema5) or crossover(rsi(close, 14), 60.5)
 short = (ema1 < ema2) and (ema2 < ema3) and (ema3 < ema4) and (ema4 < ema5) or crossunder(rsi(close, 14), 40.5)
 
-e_long = (ema1 > ema2) or crossover(rsi(close, 14), 60.5)
-e_short = (ema1 < ema2) or crossunder(rsi(close, 14), 40.5)
+longCondition = long and long[2] and not long[3]
+shortCondition = short and short[2] and not short[3]
 
-start = timestamp(2021, 1, 1, 0, 0)
+closeLong = (ema1 > ema2) or crossover(rsi(close, 14), 60.5) and not long[4]
+closeShort = (ema1 < ema2) or crossunder(rsi(close, 14), 40.5) and not short[4]
+
+start = timestamp(2001, 1, 1, 0, 0)
 end = timestamp(2022, 1, 1, 0, 0)
 
-if time >= start and time <= end
-    strategy.entry("Long", strategy.long, 25.0, when = long)
-    strategy.entry("Short", strategy.short, 25.0, when =short)
 
-strategy.exit("exit", "", profit = 250, loss = 50)
-strategy.close("Long", when = e_short)
-strategy.close("Short", when = e_long)
+if time >= start and time <= end
+    strategy.entry("Long", strategy.long, 25.0, when = longCondition)
+    strategy.entry("Short", strategy.short, 25.0, when =shortCondition)
+
+strategy.exit("exit", "", profit = 500, loss = 50)
+strategy.close("Long", when = closeShort)
+strategy.close("Short", when = closeLong)
 
 
 // Design {

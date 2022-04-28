@@ -1,0 +1,20 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=5
+
+// @description Quant Related Calculations and Functions
+library("quant")
+
+// @function Calculate percentage change of a series
+// @param val_series Series
+// @returns Percentage Change from Previous DataPoint in Series
+export pctChange(series float val_series) =>
+	((val_series - val_series[1])/val_series[1]) * 100
+
+// @function Calculate percentage change of a series
+// @param val_series Series
+// @returns Percentage Change from Previous DataPoint in Series
+export marketCap(series float val_series) =>
+    TSO = request.financial(syminfo.tickerid, "TOTAL_SHARES_OUTSTANDING", "FQ")
+    marketCap = TSO * close

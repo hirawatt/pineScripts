@@ -1,0 +1,20 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © yesgoods
+
+//@version=5
+indicator("iHotel Index")
+import yesgoods/quant/1
+
+indhotelC = request.security(symbol="NSE:INDHOTEL", timeframe=timeframe.period, expression=close)
+eihotelC = request.security(symbol="NSE:EIHOTEL", timeframe=timeframe.period, expression=close)
+rohltdC = request.security(symbol="NSE:ROHLTD", timeframe=timeframe.period, expression=close)
+chaletC = request.security(symbol="NSE:CHALET", timeframe=timeframe.period, expression=close)
+deltacorpC = request.security(symbol="NSE:DELTACORP", timeframe=timeframe.period, expression=close)
+eihahotelsC = request.security(symbol="NSE:EIHAHOTELS", timeframe=timeframe.period, expression=close)
+lemontreeC = request.security(symbol="NSE:LEMONTREE", timeframe=timeframe.period, expression=close)
+tajgvkC = request.security(symbol="NSE:TAJGVK", timeframe=timeframe.period, expression=close)
+mhrilClose = request.security(symbol="NSE:MHRIL", timeframe=timeframe.period, expression=close)
+//sinclairC = request.security(symbol="NSE:SINCLAIR", timeframe=timeframe.period, expression=close)
+
+indhotel = quant.pctChange(indhotelC)
+plot(indhotelC)

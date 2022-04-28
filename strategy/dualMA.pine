@@ -1,0 +1,51 @@
+//@version=4
+// 1. Define strategy settings
+strategy(title="Dual Moving Average", overlay=true,
+     pyramiding=1, initial_capital=100000,
+     commission_type=strategy.commission.cash_per_order,
+     commission_value=60, slippage=5,
+     format=format.price,
+     max_bars_back=375,
+     default_qty_type=strategy.fixed,
+     calc_on_every_tick=true)
+strategy.risk.max_cons_loss_days(15)
+
+fastMALen = input(title="Fast MA Length", type=input.integer, defval=1)
+slowMALen = input(title="Slow MA Length", type=input.integer, defval=23)
+
+usePosSize = input(title="Use Position Sizing?", type=input.bool, defval=true)
+riskPerc   = input(title="Risk %", type=input.float, defval=1, step=0.25)
+
+// 2. Calculate strategy values
+fastMA = ema(hlc3, fastMALen)
+slowMA = ema(hlc3, slowMALen)
+
+riskEquity  = (riskPerc / 100) * strategy.equity
+atrCurrency = (atr(20) * syminfo.pointvalue)
+posSize     = usePosSize ? floor(riskEquity / atrCurrency) : 1
+
+// 3. Output strategy data
+plot(series=fastMA, color=color.teal, linewidth=2, title="Fast MA")
+plot(series=slowMA, color=color.orange, linewidth=2, title="Slow MA")
+
+bgc = crossunder(fastMA, slowMA) ? color.red : na
+bgColour = crossover(fastMA, slowMA) ? color.green : bgc
+
+
+bgcolor(color=bgColour)
+
+// 4. Determine long trading conditions
+enterLong = crossover(fastMA, slowMA) and barstate.ishistory
+
+// 5. Code short trading conditions
+enterShort = crossunder(fastMA, slowMA) and barstate.ishistory
+
+// 6. Submit entry orders
+if (enterLong)
+    strategy.entry(id="EL", long=true, qty=posSize)
+
+if (enterShort)
+    strategy.entry(id="ES", long=false, qty=posSize)
+    
+// 7. Submit exit orders
+strategy.close_all(when=barstate.islast)
