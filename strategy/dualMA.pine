@@ -1,13 +1,13 @@
 //@version=4
 // 1. Define strategy settings
 strategy(title="Dual Moving Average", overlay=true,
-     pyramiding=1, initial_capital=100000,
-     commission_type=strategy.commission.cash_per_order,
-     commission_value=60, slippage=5,
-     format=format.price,
-     max_bars_back=375,
-     default_qty_type=strategy.fixed,
-     calc_on_every_tick=true)
+    pyramiding=1, initial_capital=100000,
+    commission_type=strategy.commission.cash_per_order,
+    commission_value=60, slippage=5,
+    format=format.price,
+    max_bars_back=375,
+    default_qty_type=strategy.fixed,
+    calc_on_every_tick=true)
 strategy.risk.max_cons_loss_days(15)
 
 fastMALen = input(title="Fast MA Length", type=input.integer, defval=1)
